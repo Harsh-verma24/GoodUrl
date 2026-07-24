@@ -10,8 +10,9 @@ type StatusResponse = {
   status?: string | null
 }
 
-const DEFAULT_API_BASE_URL = import.meta.env.VITE_API_URL 
-const DEFAULT_SITE_BASE_DOMAIN = import.meta.env.VITE_SITE_BASE_DOMAIN 
+const DEFAULT_API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000'
+const DEFAULT_SITE_BASE_DOMAIN = import.meta.env.VITE_SITE_BASE_DOMAIN ?? ''
+
 const api = axios.create({
   baseURL: DEFAULT_API_BASE_URL.replace(/\/$/, ''),
 })
@@ -28,11 +29,14 @@ function App() {
   const deploymentInProgress = Boolean(deploymentId) && status !== 'deployed'
 
   const deployedSiteUrl = useMemo(() => {
-    if (!deploymentId) {
+    if (!deploymentId || !DEFAULT_SITE_BASE_DOMAIN) {
       return ''
     }
 
-    const normalizedDomain = DEFAULT_SITE_BASE_DOMAIN.replace(/^https?:\/\//, '').replace(/\/$/, '')
+    const normalizedDomain = DEFAULT_SITE_BASE_DOMAIN
+      .replace(/^https?:\/\//, '')
+      .replace(/\/$/, '')
+
     return `http://${deploymentId}.${normalizedDomain}`
   }, [deploymentId])
 
