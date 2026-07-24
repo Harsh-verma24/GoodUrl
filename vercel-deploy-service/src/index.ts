@@ -2,8 +2,6 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import { createClient } from "redis";
-import { copyFinalDistToS3, downloadS3Folder } from "./aws.js";
-import { buildProject } from "./utils.js";
 
 const publisher = createClient({
   url: process.env.REDIS_URL!
@@ -16,30 +14,24 @@ const subscriber = createClient({
 await subscriber.connect();
 await publisher.connect();
 
-async function main(){
-    while (true) {
-    const response = await subscriber.brPop(
-        "build-queue",
-        0
-    );
+async function main() {
+  const { copyFinalDistToS3, downloadS3Folder } = await import("./aws.js");
+  const { buildProject } = await import("./utils.js");
 
-    // console.log(response);
-//     console.log(JSON.stringify(response, null, 2));
-// console.log(response?.element);
-// console.log(response?.element.length);
-// console.log([...response!.element]);
+  while (true) {
+    const response = await subscriber.brPop("build-queue", 0);
     const id = response?.element;
 
     if (!id) {
-        console.log("No id received from build-queue");
-        continue;
+      console.log("No id received from build-queue");
+      continue;
     }
 
-   await downloadS3Folder(`output/${id}`);
-   await buildProject(id);
-   await copyFinalDistToS3(id);
-   publisher.hSet("status", id, "deployed");
-}
+    await downloadS3Folder(`output/${id}`);
+    await buildProject(id);
+    await copyFinalDistToS3(id);
+    await publisher.hSet("status", id, "deployed");
+  }
 }
 
 main();
