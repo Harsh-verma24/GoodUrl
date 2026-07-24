@@ -14,23 +14,25 @@ export async function buildProject(id:string){
         const projectPath = path.join(__dirname,`output/${id}`)
         console.log(projectPath)
         console.log(fs.existsSync(projectPath))
-    const child = spawn("docker", [
-      "run",
-      "--rm",
-      "-v",
-      `${projectPath}:/app`,
-      "-w",
-      "/app",
-      "--cap-drop=ALL",
-      "--security-opt",
-      "no-new-privileges",
-      "node:20-alpine",
-      "sh",
-      "-lc",
-      "npm install && npm run build",
-    ], {
-      stdio: ["ignore", "pipe", "pipe"],
-        });
+   const child = spawn("docker", [
+  "run",
+  "--rm",
+  "-v",
+  `${projectPath}:/app`,
+  "-w",
+  "/app",
+  "--user",
+  "root",
+  "--cap-drop=ALL",
+  "--security-opt",
+  "no-new-privileges",
+  "node:20-alpine",
+  "sh",
+  "-lc",
+  "npm install && npm run build",
+], {
+  stdio: ["ignore", "pipe", "pipe"],
+});
 
     child.stdout?.on("data",function(data){
         console.log("stdout:"+ data)
