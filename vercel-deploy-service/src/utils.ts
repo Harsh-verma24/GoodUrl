@@ -120,8 +120,23 @@ export async function buildProject(id: string) {
     "-lc",
     "npm install && npm run build"
   ]);
+console.log("Copying build output back");
 
+await runCommand("docker", [
+  "run",
+  "--rm",
+  "-v",
+  `${volumeName}:/app`,
+  "-v",
+  `${projectPath}:/output`,
+  "alpine",
+  "sh",
+  "-c",
+  "cp -r /app/dist /output"
+]);
 
   console.log("Build completed");
+
+  
 
 }
