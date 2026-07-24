@@ -10,8 +10,13 @@ import { getAllFiles } from "./file.js";
 import { uploadFileToS3 } from "./aws.js";
 import {createClient} from "redis";
 
-const publisher = createClient();
-const subscriber = createClient();
+const publisher = createClient({
+  url: process.env.REDIS_URL!
+});
+
+const subscriber = createClient({
+  url: process.env.REDIS_URL!
+});
 publisher.on("error", (err) => console.log("Redis Client Error", err));
 
 await publisher.connect();

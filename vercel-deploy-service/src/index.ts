@@ -5,9 +5,13 @@ import { createClient } from "redis";
 import { copyFinalDistToS3, downloadS3Folder } from "./aws.js";
 import { buildProject } from "./utils.js";
 
-const subscriber = createClient();
-const publisher = createClient();
+const publisher = createClient({
+  url: process.env.REDIS_URL!
+});
 
+const subscriber = createClient({
+  url: process.env.REDIS_URL!
+});
 
 await subscriber.connect();
 await publisher.connect();
