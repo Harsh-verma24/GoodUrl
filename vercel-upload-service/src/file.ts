@@ -1,5 +1,5 @@
 import fs from "fs";
-import path from "path/win32";
+import path from "path";
 
  export const getAllFiles = (dirPath: string) => {
     let response : string[] = [];
