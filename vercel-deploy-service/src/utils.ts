@@ -94,6 +94,8 @@ export async function buildProject(id: string) {
   await runCommand("docker", [
     "run",
     "--rm",
+    "--user",
+    "root",
     "-v",
     `${projectPath}:/source`,
     "-v",
@@ -118,8 +120,22 @@ export async function buildProject(id: string) {
     "node:20-alpine",
     "sh",
     "-lc",
-    `export VITE_BASE=/${id}/ && npm install && npm run build`
+    `cd frontend && npm install && npm run build`
   ]);
+
+  console.log("Checking build output");
+
+await runCommand("docker", [
+  "run",
+  "--rm",
+  "-v",
+  `${volumeName}:/app`,
+  "alpine",
+  "sh",
+  "-c",
+  "ls -la /app/frontend/dist"
+]);
+
 console.log("Copying build output back");
 
 await runCommand("docker", [
@@ -132,7 +148,7 @@ await runCommand("docker", [
   "alpine",
   "sh",
   "-c",
-  "cp -r /app/dist /output"
+  "cp -r /app/frontend/dist /output"
 ]);
 
   console.log("Build completed");
