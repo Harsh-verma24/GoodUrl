@@ -40,6 +40,9 @@ app.post("/deploy", async (req, res) => {
   const repoUrl = req.body.repoUrl;
   const id = generate();
 
+  console.log(`Cloning repository: ${repoUrl} `);
+  console.log(`Cloning into directory: ${path.join(__dirname, `output/${id}`)}`);
+
   await simpleGit().clone(repoUrl, path.join(__dirname, `output/${id}`));
   console.log(repoUrl);
 
