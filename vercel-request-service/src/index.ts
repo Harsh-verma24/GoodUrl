@@ -15,7 +15,6 @@ const s3 = new S3Client({
   },
 });
 
-
 async function toBuffer(body: unknown): Promise<Buffer> {
   if (typeof body === "string") {
     return Buffer.from(body);
@@ -36,15 +35,17 @@ async function toBuffer(body: unknown): Promise<Buffer> {
   throw new TypeError("Unsupported S3 body type");
 }
 app.get(/.*/, async (req, res) => {
-  const host = req.hostname;
-  console.log(host);
-  const id = host.split(".")[0];
+  const parts = req.path.split(".").filter(Boolean);
+  console.log(parts);
+  const id = parts[0];
   console.log(id);
-  const filePath = req.path;
+  let filePath = "/" + parts.slice(1).join("/");
+  if (filePath === "/") {
+    filePath = "/index.html";
+  }
   console.log(filePath);
   const key = `dist/${id}${filePath}`;
   console.log(key);
-
 
   const command = new GetObjectCommand({
     Bucket: process.env.AWS_BUCKET_NAME!,
@@ -56,11 +57,20 @@ app.get(/.*/, async (req, res) => {
     res.status(404).send("File not found");
     return;
   }
-  const type = filePath.endsWith("html")
-    ? "text/html"
-    : filePath.endsWith("css")
-      ? "text/css"
-      : "application/javascript";
+
+  const ext = filePath.split(".").pop()?.toLowerCase();
+  const types: Record<string, string> = {
+  html: "text/html",
+  css: "text/css",
+  js: "application/javascript",
+  json: "application/json",
+  svg: "image/svg+xml",
+  png: "image/png",
+  jpg: "image/jpeg",
+  jpeg: "image/jpeg",
+  ico: "image/x-icon",
+};
+  const type = types[ext?? ""] || "application/octet-stream";
   res.setHeader("Content-Type", type);
   res.send(await toBuffer(content.Body));
 });

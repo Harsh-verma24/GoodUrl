@@ -118,7 +118,7 @@ export async function buildProject(id: string) {
     "node:20-alpine",
     "sh",
     "-lc",
-    "npm install && npm run build"
+    `export VITE_BASE=/${id}/ && npm install && npm run build`
   ]);
 console.log("Copying build output back");
 
