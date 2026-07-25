@@ -135,7 +135,7 @@ function App() {
     setLastChecked(null)
 
     try {
-      const { data } = await api.post<DeployResponse>('/deploy', {
+      const { data } = await api.post<DeployResponse>('/api/deploy', {
         repoUrl: trimmedUrl,
       })
 
