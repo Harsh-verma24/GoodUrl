@@ -120,7 +120,7 @@ export async function buildProject(id: string) {
     "node:20-alpine",
     "sh",
     "-lc",
-    `cat vite.config.ts && npm install && npm run build`
+    `npm install && npm run build -- --base=/${id}/`
   ]);
 
   console.log("Checking build output");
@@ -148,7 +148,7 @@ await runCommand("docker", [
   "alpine",
   "sh",
   "-c",
- "if [ -d /app/frontend/dist ]; then cp -r /app/frontend/dist /output; else cp -r /app/dist /output; fi"
+ "rm -rf /output/dist && if [ -d /app/frontend/dist ]; then cp -r /app/frontend/dist /output/dist; else cp -r /app/dist /output/dist; fi"
 ]);
 
   console.log("Build completed");
