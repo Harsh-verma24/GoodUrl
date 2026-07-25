@@ -35,11 +35,25 @@ async function toBuffer(body: unknown): Promise<Buffer> {
   throw new TypeError("Unsupported S3 body type");
 }
 app.get(/.*/, async (req, res) => {
-  const parts = req.path.split(".").filter(Boolean);
-  console.log(parts);
+  const parts = req.hostname.split(".");
+  if (parts[0] === "localhost" || parts[0] === "127.0.0.1") {
+    res.status(400).send("Deployment id missing");
+    return;
+  }
+  const reserved = ["www", "goodurl"];
+
   const id = parts[0];
-  console.log(id);
-  let filePath = "/" + parts.slice(1).join("/");
+  if (reserved.includes(id as string)) {
+    res.status(404).send("Invalid deployment");
+    return;
+  }
+  if (!id) {
+    res.status(400).send("Invalid deployment");
+    return;
+  }
+
+  let filePath = req.path;
+
   if (filePath === "/") {
     filePath = "/index.html";
   }
@@ -52,27 +66,37 @@ app.get(/.*/, async (req, res) => {
     Key: key,
   });
 
-  const content = await s3.send(command);
-  if (!content.Body) {
-    res.status(404).send("File not found");
-    return;
-  }
+  try {
+    const content = await s3.send(command);
 
-  const ext = filePath.split(".").pop()?.toLowerCase();
-  const types: Record<string, string> = {
-  html: "text/html",
-  css: "text/css",
-  js: "application/javascript",
-  json: "application/json",
-  svg: "image/svg+xml",
-  png: "image/png",
-  jpg: "image/jpeg",
-  jpeg: "image/jpeg",
-  ico: "image/x-icon",
-};
-  const type = types[ext?? ""] || "application/octet-stream";
-  res.setHeader("Content-Type", type);
-  res.send(await toBuffer(content.Body));
+    if (!content.Body) {
+      res.status(404).send("File not found");
+      return;
+    }
+
+    const ext = filePath.split(".").pop()?.toLowerCase();
+    const types: Record<string, string> = {
+      html: "text/html",
+      css: "text/css",
+      js: "application/javascript",
+      json: "application/json",
+      svg: "image/svg+xml",
+      png: "image/png",
+      jpg: "image/jpeg",
+      jpeg: "image/jpeg",
+      ico: "image/x-icon",
+      txt: "text/plain",
+      woff: "font/woff",
+      woff2: "font/woff2",
+    };
+    const type = types[ext ?? ""] || "application/octet-stream";
+    res.setHeader("Content-Type", type);
+    res.setHeader("Cache-Control", "public, max-age=3600");
+    res.send(await toBuffer(content.Body));
+  } catch (error) {
+    console.log(error);
+    res.status(404).send("File not found");
+  }
 });
 
 app.listen(3001, () => {
