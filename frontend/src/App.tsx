@@ -218,20 +218,20 @@ function App() {
 
             <p className="mt-4 text-sm leading-6 text-slate-700">{message}</p>
 
-            {status === 'deployed' && deployedSiteUrl ? (
-              <div className="mt-4 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700">
+            {(status === 'deployed' || status === 'live') && deployedSiteUrl ? (
+              <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-slate-700">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <span className="block text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">
-                      Live URL
+                    <span className="block text-xs font-semibold uppercase tracking-[0.14em] text-emerald-600">
+                      🚀 Live URL
                     </span>
-                    <p className="mt-1 break-all font-medium text-slate-950">{`${deployedSiteUrl}/index.html`}</p>
+                    <p className="mt-1 break-all font-medium text-slate-950">{deployedSiteUrl}</p>
                   </div>
                   <a
-                    href={`${deployedSiteUrl}/index.html`}
+                    href={deployedSiteUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex shrink-0 items-center rounded-full border border-slate-200 bg-slate-950 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-white transition hover:bg-slate-800"
+                    className="inline-flex shrink-0 items-center rounded-full border border-emerald-300 bg-emerald-600 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-white transition hover:bg-emerald-700"
                   >
                     Open site
                   </a>

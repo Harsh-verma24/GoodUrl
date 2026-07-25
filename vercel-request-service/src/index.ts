@@ -35,24 +35,14 @@ async function toBuffer(body: unknown): Promise<Buffer> {
   throw new TypeError("Unsupported S3 body type");
 }
 app.get(/.*/, async (req, res) => {
-  const parts = req.hostname.split(".");
-  if (parts[0] === "localhost" || parts[0] === "127.0.0.1") {
+  const parts = req.path.split("/").filter(Boolean);
+  const id = parts[0];
+  if (!id) {
     res.status(400).send("Deployment id missing");
     return;
   }
-  const reserved = ["www", "goodurl"];
 
-  const id = parts[0];
-  if (reserved.includes(id as string)) {
-    res.status(404).send("Invalid deployment");
-    return;
-  }
-  if (!id) {
-    res.status(400).send("Invalid deployment");
-    return;
-  }
-
-  let filePath = req.path;
+  let filePath = "/" + parts.slice(1).join("/");
 
   if (filePath === "/") {
     filePath = "/index.html";
