@@ -120,7 +120,7 @@ export async function buildProject(id: string) {
     "node:20-alpine",
     "sh",
     "-lc",
-    `cd frontend && npm install && npm run build`
+    `if [ -d frontend ]; then cd frontend; fi && npm install && npm run build`
   ]);
 
   console.log("Checking build output");
@@ -148,7 +148,7 @@ await runCommand("docker", [
   "alpine",
   "sh",
   "-c",
-  "cp -r /app/frontend/dist /output"
+ "if [ -d /app/frontend/dist ]; then cp -r /app/frontend/dist /output; else cp -r /app/dist /output; fi"
 ]);
 
   console.log("Build completed");
