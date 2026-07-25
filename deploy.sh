@@ -9,6 +9,7 @@ git pull
 
 echo "📦 Installing dependencies..."
 
+
 cd vercel-upload-service
 npm install
 npm run build
@@ -23,6 +24,14 @@ cd vercel-request-service
 npm install
 npm run build
 cd ..
+
+
+echo "🌐 Building frontend..."
+cd frontend
+npm install
+npm run build
+cd ..
+
 
 echo "♻️ Restarting PM2 services..."
 
