@@ -3,7 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": { "build": "tsc -b", "start": "node dist/index.js", "dev": "tsx watch src/index.ts" },
+  "scripts": {
+    "build": "tsc -b",
+    "start": "node dist/index.js",
+    "dev": "tsx watch src/index.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -14,6 +18,7 @@
     "redis": "^6.1.0"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1"
+    "@types/node": "^26.1.1",
+    "typescript": "^7.0.2"
   }
 }
