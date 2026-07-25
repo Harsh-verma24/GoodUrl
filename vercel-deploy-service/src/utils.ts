@@ -120,7 +120,7 @@ export async function buildProject(id: string) {
     "node:20-alpine",
     "sh",
     "-lc",
-    `if [ -d frontend ]; then cd frontend; fi && cat vite.config.ts && npm install && npm run build`
+    `cat vite.config.ts && npm install && npm run build`
   ]);
 
   console.log("Checking build output");
