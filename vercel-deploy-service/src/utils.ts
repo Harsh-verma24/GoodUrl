@@ -133,7 +133,7 @@ await runCommand("docker", [
   "alpine",
   "sh",
   "-c",
-  "ls -la /app/frontend/dist"
+"ls -la /app/dist || ls -la /app/frontend/dist"
 ]);
 
 console.log("Copying build output back");
