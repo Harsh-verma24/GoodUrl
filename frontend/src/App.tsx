@@ -11,8 +11,6 @@ type StatusResponse = {
 }
 
 const DEFAULT_API_BASE_URL = import.meta.env.VITE_API_URL?.trim() || window.location.origin
-const DEFAULT_SITE_BASE_DOMAIN = import.meta.env.VITE_SITE_BASE_DOMAIN ?? ''
-
 const api = axios.create({
   baseURL: DEFAULT_API_BASE_URL.replace(/\/$/, ''),
 })
@@ -29,15 +27,11 @@ function App() {
   const deploymentInProgress = Boolean(deploymentId) && status !== 'deployed'
 
   const deployedSiteUrl = useMemo(() => {
-    if (!deploymentId || !DEFAULT_SITE_BASE_DOMAIN) {
+    if (!deploymentId) {
       return ''
     }
 
-    const normalizedDomain = DEFAULT_SITE_BASE_DOMAIN
-      .replace(/^https?:\/\//, '')
-      .replace(/\/$/, '')
-
-    return `${normalizedDomain}/${deploymentId}`
+    return `http://goodurl.koreacentral.cloudapp.azure.com/${deploymentId}`
   }, [deploymentId])
 
   const statusLabel = useMemo(() => {
