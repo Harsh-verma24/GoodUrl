@@ -37,7 +37,7 @@ function App() {
       .replace(/^https?:\/\//, '')
       .replace(/\/$/, '')
 
-    return `http://${deploymentId}.${normalizedDomain}`
+    return `${normalizedDomain}/${deploymentId}`
   }, [deploymentId])
 
   const statusLabel = useMemo(() => {
