@@ -23,9 +23,18 @@ await subscriber.connect();
 const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+const frontendOrigin = process.env.FRONTEND_URL
+  ? process.env.FRONTEND_URL.startsWith("http")
+    ? process.env.FRONTEND_URL
+    : `http://${process.env.FRONTEND_URL}`
+  : "http://localhost:3001";
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: frontendOrigin
+  })
+);
 app.use(express.json());
 
 app.get("/", (req, res) => {
