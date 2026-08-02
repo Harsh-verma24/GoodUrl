@@ -34,6 +34,11 @@ async function toBuffer(body: unknown): Promise<Buffer> {
 
   throw new TypeError("Unsupported S3 body type");
 }
+
+app.get("/health", (_, res) => {
+  res.json({ status: "ok" });
+});
+
 app.get(/.*/, async (req, res) => {
   const parts = req.path.split("/").filter(Boolean);
   const id = parts[0];

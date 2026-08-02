@@ -37,6 +37,10 @@ app.use(
 );
 app.use(express.json());
 
+app.get("/health", (_, res) => {
+  res.json({ status: "ok" });
+});
+
 app.get("/", (req, res) => {
   res.send("Hello, World!");
 });

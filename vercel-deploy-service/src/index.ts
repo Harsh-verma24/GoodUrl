@@ -8,6 +8,10 @@ const app = express();
 
 const PORT = Number(process.env.PORT) || 3002;
 
+app.get("/health", (_, res) => {
+  res.json({ status: "ok" });
+});
+
 app.get("/", (_, res) => {
   res.send("Deploy worker is running");
 });
