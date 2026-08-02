@@ -14,7 +14,8 @@ const DEFAULT_API_BASE_URL = import.meta.env.VITE_API_URL?.trim() || window.loca
 const api = axios.create({
   baseURL: DEFAULT_API_BASE_URL.replace(/\/$/, ''),
 })
-
+console.log(import.meta.env.VITE_API_URL);
+console.log(DEFAULT_API_BASE_URL);
 function App() {
   const [repoUrl, setRepoUrl] = useState('')
   const [deploymentId, setDeploymentId] = useState('')
